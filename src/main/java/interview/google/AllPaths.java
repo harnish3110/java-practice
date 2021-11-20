@@ -17,6 +17,11 @@ public class AllPaths {
     public static final char ROAD = '_';
 
 
+    /**
+     * Point Class representing a point in the grid.
+     * row is x coordinate
+     * col is y coordinate
+     */
     private static class Point {
         int row;
         int col;
@@ -29,6 +34,9 @@ public class AllPaths {
         }
     }
 
+    /**
+     * Class to represent the Point with the distance.
+     */
     private static class PointPath {
         int distance;
         Point point;
@@ -40,6 +48,10 @@ public class AllPaths {
 
     }
 
+    /**
+     * @param grid The Search Matrix
+     *             Finds the start point 'S' in the grid
+     */
     public void findStartPoint(char[][] grid) {
         Outer:
         for (int i = 0; i < ROW; i++) {
@@ -52,6 +64,10 @@ public class AllPaths {
         }
     }
 
+    /**
+     * @param grid The search Matrix
+     *             The Matrix starts the search in all direction from the start point to find all the posible routes
+     */
     public void startSearchWithStack(char[][] grid) {
         if (grid == null || grid.length == 0) {
             System.out.println("No GRID Found");
@@ -115,6 +131,12 @@ public class AllPaths {
 
     }
 
+    /**
+     * @param grid    The search Matrix
+     * @param path    The Stack to hold the path
+     * @param current the point to start the search to destination
+     * @param visited A boolean grid to maintain the record of the cell/point is visited.
+     */
     public void findPaths(char[][] grid, Stack<PointPath> path, PointPath current, boolean[][] visited) {
         int x = current.point.row;
         int y = current.point.col;
@@ -168,14 +190,33 @@ public class AllPaths {
         path.pop();
     }
 
+    /**
+     * @param x       The point's x coordinate, ROW
+     * @param y       The point's y coordinate, COLUMN
+     * @param grid    The search matrix
+     * @param visited The Boolean matrix, to keep to record for visited cell
+     * @return a boolean value if the cell is valid to use it as a pathway
+     */
     public boolean isValid(int x, int y, char[][] grid, boolean[][] visited) {
         return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] != '0' && !visited[x][y];
     }
 
+    /**
+     * @param x    The point's x coordinate, ROW
+     * @param y    The point's y coordinate, COLUMN
+     * @param grid The search matrix
+     * @return a boolean value if the cell is valid to use it as a pathway
+     */
     public boolean isValid(int x, int y, char[][] grid) {
         return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] != '0';
     }
 
+    /**
+     * @param path The stack (path)
+     * @param end The end point's location in the grid
+     * @param grid the grid/ matrix
+     * @param dist the distance.
+     */
     public void printPath(Collection<PointPath> path, Point end, char[][] grid, int dist) {
         char[][] mat = new char[ROW][COL];
         /*

@@ -17,7 +17,7 @@ public class DataMap {
         maxValue = ARB_STEPS * stepsCount;
         float step = (float) SLIDER_MAX / stepsCount;
         int value = 0;
-        // Creating the map with key starting from 0.0 to 100.0
+        // Creating the map with key Starting from 0.0 to 100.0
         for (float key = (float) MIN; key <= SLIDER_MAX; key += step, value += ARB_STEPS) {
             dataMap.put(key, value);
         }

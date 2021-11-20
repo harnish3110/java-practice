@@ -1,9 +1,6 @@
 package interview.google;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /*Given a matrix of N*M order. Find the shortest distance from a source cell to a destination cell, traversing through limited cells only. Also you can move only up, down, left and right. If found output the distance else -1.
@@ -15,8 +12,6 @@ This problem is meant for single source and destination.
 * */
 
 public class Fourth {
-
-    public static List<Integer> result = null;
 
     public class QItem {
         int row;
@@ -49,14 +44,11 @@ public class Fourth {
             }
         }
 
-        // applying BFS on matrix cells starting from source
+        // applying BFS on matrix cells Starting from source
         Queue<QItem> queue = new LinkedList<>();
         queue.add(new QItem(source.row, source.col, 0));
 
-        result = new ArrayList<>();
-
-        boolean[][] visited
-                = new boolean[grid.length][grid[0].length];
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
         visited[source.row][source.col] = true;
 
         while (!queue.isEmpty()) {
@@ -64,8 +56,7 @@ public class Fourth {
 
             // Destination found;
             if (grid[p.row][p.col] == 'd') {
-                result.add(p.dist);
-//                return p.dist;
+                return p.dist;
             }
 
             // moving up
@@ -101,23 +92,10 @@ public class Fourth {
     }
 
     // checking where it's valid or not
-    private boolean isValid(int x, int y,
-                            char[][] grid,
-                            boolean[][] visited) {
+    private boolean isValid(int x, int y, char[][] grid, boolean[][] visited) {
         return x >= 0 && y >= 0 && x < grid.length
                 && y < grid[0].length && grid[x][y] != '0'
                 && !visited[x][y];
-
-        /*
-        if (x >= 0 && y >= 0 && x < grid.length
-                && y < grid[0].length && grid[x][y] != '0'
-                && visited[x][y] == false) {
-            return true;
-        }
-        return false;
-        */
-
-
     }
 
     public static void main(String[] srgs) {
@@ -134,13 +112,10 @@ public class Fourth {
                 {'*', '0', '*', '0', '*'},
                 {'*', '*', '*', '0', 'd'}};
 
-//        System.out.println(f.minDistance(grid));
-//        System.out.println(Fourth.result);
+        System.out.println("Grid 1");
+        System.out.println("The distance is = " + f.minDistance(grid));
 
-        System.out.println(f.minDistance(grid2));
-        System.out.println(Fourth.result);
-
-
+        System.out.println("Grid 2");
+        System.out.println("The distance is = " + f.minDistance(grid2));
     }
-
 }
