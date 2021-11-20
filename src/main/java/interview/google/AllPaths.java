@@ -9,6 +9,13 @@ public class AllPaths {
 
     public Point start = null;
 
+    public static final char DOWN = 8595;
+    public static final char UP = 8593;
+    public static final char LEFT = 8592;
+    public static final char RIGHT = 8594;
+    public static final char WALL = 1769;
+    public static final char ROAD = '_';
+
 
     private static class Point {
         int row;
@@ -63,8 +70,8 @@ public class AllPaths {
             boolean[][] visited = new boolean[ROW][COL];
             visited[start.row][start.col] = true;
             Stack<PointPath> stack = new Stack<>();
-            stack.add(new PointPath(0, new Point(start.row, start.col, grid[start.row][start.col])));
-            PointPath point = new PointPath(1, new Point(start.row, start.col - 1, grid[start.row][start.col - 1]));
+            stack.add(new PointPath(0, new Point(start.row, start.col, 'S')));
+            PointPath point = new PointPath(1, new Point(start.row, start.col - 1, UP));
             findPaths(grid, stack, point, visited);
             System.out.println("-------------------------------");
         }
@@ -75,8 +82,8 @@ public class AllPaths {
             Stack<PointPath> stack = new Stack<>();
             boolean[][] visited = new boolean[ROW][COL];
             visited[start.row][start.col] = true;
-            stack.add(new PointPath(0, new Point(start.row, start.col, grid[start.row][start.col])));
-            PointPath point = new PointPath(1, new Point(start.row + 1, start.col, grid[start.row + 1][start.col]));
+            stack.add(new PointPath(0, new Point(start.row, start.col, 'S')));
+            PointPath point = new PointPath(1, new Point(start.row + 1, start.col, DOWN));
             findPaths(grid, stack, point, visited);
             System.out.println("-------------------------------");
         }
@@ -87,8 +94,8 @@ public class AllPaths {
             Stack<PointPath> stack = new Stack<>();
             boolean[][] visited = new boolean[ROW][COL];
             visited[start.row][start.col] = true;
-            stack.add(new PointPath(0, new Point(start.row, start.col, grid[start.row][start.col])));
-            PointPath point = new PointPath(1, new Point(start.row, start.col + 1, grid[start.row][start.col + 1]));
+            stack.add(new PointPath(0, new Point(start.row, start.col, 'S')));
+            PointPath point = new PointPath(1, new Point(start.row, start.col + 1, RIGHT));
             findPaths(grid, stack, point, visited);
             System.out.println("-------------------------------");
         }
@@ -99,8 +106,8 @@ public class AllPaths {
             Stack<PointPath> stack = new Stack<>();
             boolean[][] visited = new boolean[ROW][COL];
             visited[start.row][start.col] = true;
-            stack.add(new PointPath(0, new Point(start.row, start.col, grid[start.row][start.col])));
-            PointPath point = new PointPath(1, new Point(start.row - 1, start.col, grid[start.row - 1][start.col]));
+            stack.add(new PointPath(0, new Point(start.row, start.col, 'S')));
+            PointPath point = new PointPath(1, new Point(start.row - 1, start.col, LEFT));
             findPaths(grid, stack, point, visited);
             System.out.println("-------------------------------");
         }
@@ -122,7 +129,7 @@ public class AllPaths {
         path.add(current);
 
         if (grid[x][y] == 'd') {
-            printPath(path);
+            printPath(path, new Point(x, y, 'D'), grid, current.distance);
 //            path.clear();
             return;
         }
@@ -131,29 +138,29 @@ public class AllPaths {
 
         // move right
         if (isValid(x, y + 1, grid, visited)) {
-
-            newPoint = new PointPath(dist + 1, new Point(x, y + 1, grid[x][y + 1]));
+            visited[x][y + 1] = true;
+            newPoint = new PointPath(dist + 1, new Point(x, y + 1, RIGHT));
             findPaths(grid, path, newPoint, visited);
         }
 
         // move down
         if (isValid(x + 1, y, grid, visited)) {
             visited[x + 1][y] = true;
-            newPoint = new PointPath(dist + 1, new Point(x + 1, y, grid[x + 1][y]));
+            newPoint = new PointPath(dist + 1, new Point(x + 1, y, DOWN));
             findPaths(grid, path, newPoint, visited);
         }
 
         // move left
         if (isValid(x, y - 1, grid, visited)) {
             visited[x][y - 1] = true;
-            newPoint = new PointPath(dist + 1, new Point(x, y - 1, grid[x][y - 1]));
+            newPoint = new PointPath(dist + 1, new Point(x, y - 1, LEFT));
             findPaths(grid, path, newPoint, visited);
         }
 
         // move up
         if (isValid(x - 1, y, grid, visited)) {
             visited[x - 1][y] = true;
-            newPoint = new PointPath(dist + 1, new Point(x - 1, y, grid[x - 1][y]));
+            newPoint = new PointPath(dist + 1, new Point(x - 1, y, UP));
             findPaths(grid, path, newPoint, visited);
         }
 
@@ -169,7 +176,7 @@ public class AllPaths {
         return x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] != '0';
     }
 
-    public void printPath(Collection<PointPath> path) {
+    public void printPath(Collection<PointPath> path, Point end, char[][] grid, int dist) {
         char[][] mat = new char[ROW][COL];
         /*
         path.forEach(pointPath -> {
@@ -177,16 +184,26 @@ public class AllPaths {
         System.out.println("Distance = " + pointPath.distance);
         });
         */
+        for (int i = 0; i < ROW; i++) {
+            for (int j = 0; j < COL; j++) {
+                if (grid[i][j] == '*') mat[i][j] = ' ';
+                else if (grid[i][j] == '0') mat[i][j] = WALL;
+            }
+        }
         for (PointPath pointPath : path) {
-            mat[pointPath.point.row][pointPath.point.col] = 1;
+            mat[pointPath.point.row][pointPath.point.col] = pointPath.point.val;
         }
         for (int i = 0; i < ROW; i++) {
             System.out.print("{ ");
             for (int j = 0; j < COL; j++) {
-                System.out.print(mat[i][j]);
+                if (i == start.row && j == start.col) System.out.print(" S ");
+                else if (i == end.row && j == end.col) System.out.print(" D ");
+                else System.out.print(" " + mat[i][j] + " ");
+
             }
             System.out.println(" }");
         }
+        System.out.println("Distance is = " + dist);
 
     }
 
@@ -197,7 +214,6 @@ public class AllPaths {
                 {'*', '0', '*', '0', '*'},
                 {'*', '0', '*', '0', '*'},
                 {'*', '*', '*', '0', 'd'}};
-
 
         new AllPaths().startSearchWithStack(grid);
     }
